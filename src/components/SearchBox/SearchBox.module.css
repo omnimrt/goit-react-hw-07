@@ -1,0 +1,10 @@
+.searchBoxDiv {
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+}
+
+.input {
+  width: 320px;
+  padding: 6px;
+}

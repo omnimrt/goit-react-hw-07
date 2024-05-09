@@ -1,18 +1,20 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 import ContactList from "./components/ContactList/ContactList";
 import SearchBox from "./components/SearchBox/SearchBox";
 import ContactForm from "./components/ContactForm/ContactForm";
-import { nanoid } from "nanoid";
-import { useSelector } from "react-redux";
-import { addContact, deleteContact } from "./redux/contactsSlice";
 import { setFilter } from "./redux/filtersSlice";
+import { fetchContacts, addContact, deleteContact } from "./redux/contactsOps";
+
 function App() {
   const dispatch = useDispatch();
-
   const contacts = useSelector((state) => state.phonebook.contacts.items);
   const filter = useSelector((state) => state.filters.name);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   const filteredContacts = contacts.filter(
     (contact) =>
@@ -20,20 +22,12 @@ function App() {
       contact.name.toLowerCase().includes((filter || "").toLowerCase())
   );
 
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(contacts));
-  }, [contacts]);
-
   const onAddUser = (formData) => {
-    const finalUser = {
-      ...formData,
-      id: nanoid(),
-    };
-    dispatch(addContact(finalUser));
+    dispatch(addContact(formData));
   };
 
-  const onUserDelete = (userId) => {
-    dispatch(deleteContact(userId));
+  const onUserDelete = (id) => {
+    dispatch(deleteContact(id));
   };
 
   const onChangeFilter = (event) => {
